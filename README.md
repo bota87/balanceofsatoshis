@@ -1,3 +1,15 @@
+Forked version with amounts on telegram messages in satoshis
+
+Install istructions:
+```
+docker run -it --rm \
+	--network="host" \
+	--mount type=bind,source="/home/bitcoin/.bos",destination=/home/node/.bos \
+	--mount type=bind,source="/home/bitcoin/.lnd",destination=/home/node/.lnd,readonly \
+	--name bos-telegram-bot \
+	bota87/balanceofsatoshis telegram --connect XXXXXXXX
+```
+
 # Balance of Satoshis
 
 Commands for working with LND balances.
