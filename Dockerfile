@@ -1,20 +1,13 @@
-FROM node:lts-alpine
-
-# UID / GID 1000 is default for user `node` in the `node:latest` image, this
-# way the process will run as a non-root user
-ARG USER_ID=1000
-ARG GROUP_ID=1000
-ENV USER_ID=$USER_ID
-ENV GROUP_ID=$GROUP_ID
-
-WORKDIR /app/
-
-RUN chown -R $USER_ID:$GROUP_ID /app/
-
-USER $USER_ID:$GROUP_ID
-
-COPY . /app/
-
+FROM node:lts-alpine AS build
+WORKDIR /app
+COPY package*.json /app/
 RUN npm ci
+ 
+FROM node:14.15-alpine
+ENV NODE_ENV production
+USER node
+WORKDIR /app
+COPY --chown=node:node --from=build /app/node_modules /app/node_modules
+COPY --chown=node:node . /app
 
-ENTRYPOINT [ "/app/bos" ]
+ENTRYPOINT [ "node", "/app/bos" ]
